@@ -1,0 +1,58 @@
+Proxy类提供了创建动态代理类及其实例的静态方法。
+（1）getProxyClass()静态方法负责创建动态代理类，它的完整定义如下：
+
+public static Class<?>getProxyClass(ClassLoader loader,Class<?>[] interfaces) throwsIllegalArgumentException
+
+
+  参数loader 指定动态代理类的类加载器，参数interfaces指定动态代理类需要实现的所有接口。
+
+（2）newProxyInstance()静态方法负责创建动态代理类的实例，它的完整定义如下：
+
+public static Object newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler handler) throws
+     IllegalArgumentException
+
+    参数loader指定动态代理类的类加载器，参数interfaces 指定动态代理类需要实现的所有接口，参数handler 指定与动态代理类关联的InvocationHandler 对象。
+
+
+以下两种方式都创建了实现Foo接口的动态代理类的实例：
+
+//创建InvocationHandler对象
+InvocationHandler handler = new MyInvocationHandler(...);
+
+//创建动态代理类
+Class proxyClass = Proxy.getProxyClass(Foo.class.getClassLoader(),new Class[] { Foo.class });
+
+//创建动态代理类的实例
+Foo foo = (Foo) proxyClass.getConstructor(new Class[] {InvocationHandler.class }).
+    newInstance(new Object[] {handler });
+
+
+
+//创建InvocationHandler对象
+InvocationHandler handler = new MyInvocationHandler(...);
+
+//直接创建动态代理类的实例
+Foo foo = (Foo)Proxy.newProxyInstance(Foo.class.getClassLoader(),new Class[] {Foo.class }, handler);
+
+由Proxy类的静态方法创建的动态代理类具有以下特点：
+  动态代理类是public、final和非抽象类型的；
+  动态代理类继承了java.lang.reflect.Proxy类；
+  动态代理类的名字以“$Proxy”开头；
+ 动态代理类实现getProxyClass()和newProxyInstance()方法中参数interfaces指定的所有接口；
+
+Proxy 类的isProxyClass(Class<?>cl)静态方法可用来判断参数指定的类是否为动态代理类。只有通过Proxy类创建的类才是动态代理类；
+
+动态代理类都具有一个public 类型的构造方法，该构造方法有一个InvocationHandler 类型的参数。
+
+由Proxy类的静态方法创建的动态代理类的实例具有以下特点：
+1. 假定变量foo 是一个动态代理类的实例，并且这个动态代理类实现了Foo 接口，那么“foo instanceofFoo”的值为true。把变量foo强制转换为Foo类型是合法的：
+(Foo) foo //合法
+
+2.每个动态代理类实例都和一个InvocationHandler 实例关联。Proxy类的getInvocationHandler(Objectproxy)静态方法返回与参数proxy指定的代理类实例所关联的InvocationHandler 对象。
+
+3.假定Foo接口有一个amethod()方法，那么当程序调用动态代理类实例foo的amethod()方法时，该方法会调用与它关联的InvocationHandler对象的invoke()方法。
+
+InvocationHandler 接口为方法调用接口，它声明了负责调用任意一个方法的invoke()方法：
+Object invoke(Object proxy,Method method,Object[] args) throwsThrowable
+
+参数proxy指定动态代理类实例，参数method指定被调用的方法，参数args指定向被调用方法传递的参数，invoke()方法的返回值表示被调用方法的返回值。

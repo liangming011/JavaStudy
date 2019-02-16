@@ -1,0 +1,15 @@
+Cglib动态代理
+
+　　添加jar包asm-commons-2.2.2.jar、asm-util-2.2.2.jar、asm-2.2.2.jar、cglib-nodep-2.1_3.jar。
+
+　　注意：如果用了cglib-nodep-2.1_3.jar，就不能用cglib-2.2.2.jar了，这两个jar包会冲突；而且Spring的asm-2.2.2.jar和Hibernate的asm.jar也会冲突，不能共存。否则会报如下的错：
+
+java.lang.NoSuchMethodError: org.objectweb.asm.ClassWriter.<init>(Z)V
+
+最后简单总结两点JDK和Cglib实现的动态代理的区别：
+
+　　1、JDK实现动态代理的代理对象和目标对象必须实现相同的接口；Cglib实现动态代理的原理则是为目标对象创建一个子类座位代理对象。如果目标类实现了接口，则必须用JDK动态代理，否则，两个都可以用。
+
+　　2、JDK在运算量小的时候性能优于Cglib，运算量大的时候Cglib性能较优。详参考《Cglib 与 JDK动态代理的运行性能比较》
+
+http://www.cnblogs.com/haiq/p/4304615.html

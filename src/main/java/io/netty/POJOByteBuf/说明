@@ -1,0 +1,26 @@
+到目前为止，我们所审查的所有示例都使用了ByteBuf作为协议消息的主要数据结构。
+在本节中，我们将改进TIME协议客户端和服务器示例以使用POJO而不是一个 ByteBuf。
+
+在你的ChannelHandlers 中使用POJO的优势是显而易见的;
+通过分离ByteBuf从处理程序中提取信息的代码，您的处理程序变得更易于维护和重用。
+在TIME客户端和服务器示例中，我们只读取一个32位整数，这不是ByteBuf直接使用的主要问题。
+但是，您会发现在实现真实世界协议时必须进行分离。
+
+首先，让我们定义一个名为的新类型UnixTime。
+
+我们现在可以修改它TimeDecoder来产生一个UnixTime而不是一个ByteBuf。
+ out.add(new UnixTime(in.readUnsignedInt())); // (4)
+
+使用更新的解码器，TimeClientHandler不再使用ByteBuf：
+ UnixTime m = (UnixTime) msg;
+        System.out.println(m);
+        ctx.close();
+
+更简单，更优雅，对吧？可以在服务器端应用相同的技术。我们TimeServerHandler这次更新第一次：
+ ChannelFuture f = ctx.writeAndFlush(new UnixTime());
+        f.addListener(ChannelFutureListener.CLOSE);
+
+现在，唯一缺少的部分是一个编码器，它的实现ChannelOutboundHandler将一个UnixTime转换为一个ByteBuf。
+它比编写解码器简单得多，因为编码消息时无需处理数据包碎片和汇编。
+
+剩下的最后一个任务是插入TimeEncoder到ChannelPipeline之前的服务器端TimeServerHandler，并留作一件容易的事。
