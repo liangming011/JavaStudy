@@ -17,8 +17,8 @@ public class Reflection003 {
      *      public Constructor[] getConstructors();所有'共有的'构造方法
      *      public Constructor[] getDeclaredConstructors();获取所有的构造方法（包括私有，受保护，默认，共有）
      *   2）：获取单个的方法，并调用
-     *     public Constructor[] getConstructors(Class... patameterTypes):获取单个的“共有的”构造方法
-     *     public Constructor[] getDeclaredConstructors(Class... patameterTypes);获取“某个”的构造方法（包括私有，受保护，默认，共有）
+     *     public Constructor[] getConstructor(Class... patameterTypes):获取单个的“共有的”构造方法
+     *     public Constructor[] getDeclaredConstructor(Class... patameterTypes);获取“某个”的构造方法（包括私有，受保护，默认，共有）
      *
      *   调用构造方法：
      *     Constructor --> newInstance(Object... initargs)

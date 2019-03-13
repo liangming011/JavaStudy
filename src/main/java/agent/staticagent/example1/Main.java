@@ -13,7 +13,7 @@ public class Main {
 
         //对代理类进行实例化，将实现类的实例化对象传入代理类中
         UserManager userManagerProxy = new UserManagerProxyImpl(userManager);
-
+        
         //近代理类方法即可
         userManagerProxy.addUser(user);
 

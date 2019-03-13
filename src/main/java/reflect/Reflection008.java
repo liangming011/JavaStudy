@@ -27,7 +27,7 @@ public class Reflection008 {
 
         //遍历集合
         for (Object s : strArray) {
-            System.out.println(s);
+            System.out.println(s.getClass().getName());
         }
     }
 }
